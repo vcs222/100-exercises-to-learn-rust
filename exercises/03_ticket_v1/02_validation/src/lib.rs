@@ -33,7 +33,7 @@ impl Ticket {
         if status != "To-Do" && status != "In Progress" && status != "Done" {
             panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
         }
-        
+
         Self {
             title,
             description,
