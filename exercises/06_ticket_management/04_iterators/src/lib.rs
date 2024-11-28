@@ -18,6 +18,7 @@ impl IntoIterator for TicketStore {
         self.tickets.into_iter()
     }
 }
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ticket {
     pub title: TicketTitle,
