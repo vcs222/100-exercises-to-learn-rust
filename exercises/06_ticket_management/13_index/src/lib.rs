@@ -58,6 +58,28 @@ impl TicketStore {
     }
 }
 
+impl Default for TicketStore {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl std::ops::Index<TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, id: TicketId) -> &Self::Output {
+        self.get(id).expect("Ticket not found")
+    }
+}
+
+impl std::ops::Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, id: &TicketId) -> &Self::Output {
+        self.get(*id).expect("Ticket not found")
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{Status, TicketDraft, TicketStore};
@@ -82,7 +104,7 @@ mod tests {
             description: ticket_description(),
         };
         let id2 = store.add_ticket(draft2);
-        let ticket2 = &store[&id2];
+        let _ticket2 = &store[&id2];
 
         assert_ne!(id1, id2);
     }
