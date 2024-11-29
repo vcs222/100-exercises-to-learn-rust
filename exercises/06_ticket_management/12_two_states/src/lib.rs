@@ -44,8 +44,30 @@ impl TicketStore {
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    fn next_id(&self) -> TicketId {
+        TicketId(self.tickets.len() as u64)
+    }
+
+    pub fn add_ticket(&mut self, ticket_draft: TicketDraft) -> TicketId {
+        let ticket_id = self.next_id();
+        self.tickets.push(Ticket {
+            id: ticket_id,
+            title: ticket_draft.title,
+            description: ticket_draft.description,
+            status: Status::ToDo,
+        });
+
+        ticket_id
+    }
+
+    pub fn get(&self, id: TicketId) -> Option<&Ticket> {
+        self.tickets.iter().find(|ticket| ticket.id == id)
+    }
+}
+
+impl Default for TicketStore {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -73,7 +95,7 @@ mod tests {
             description: ticket_description(),
         };
         let id2 = store.add_ticket(draft2);
-        let ticket2 = store.get(id2).unwrap();
+        let _ticket2 = store.get(id2).unwrap();
 
         assert_ne!(id1, id2);
     }
