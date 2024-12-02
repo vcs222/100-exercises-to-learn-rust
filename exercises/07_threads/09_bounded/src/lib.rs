@@ -60,8 +60,8 @@ pub fn server(receiver: Receiver<Command>) {
                 draft,
                 response_channel,
             }) => {
-                let _id = store.add_ticket(draft);
-                response_channel.send(_id).unwrap();
+                let id = store.add_ticket(draft);
+                response_channel.send(id).unwrap();
             }
             Ok(Command::Get {
                 id,
