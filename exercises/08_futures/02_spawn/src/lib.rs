@@ -11,15 +11,9 @@ pub async fn echo(listener: TcpListener) -> Result<(), anyhow::Error> {
 //  Multiple connections (on the same listeners) should be processed concurrently.
 //  The received data should be echoed back to the client.
 pub async fn echoes(first: TcpListener, second: TcpListener) -> Result<(), anyhow::Error> {
-    // let (first, second) = tokio::join!(echo(first), echo(second));
-    // first?;
-    // second?;
-    // Ok(())
-
     let first_handler = tokio::spawn(echo(first));
     let second_handler = tokio::spawn(echo(second));
-    // let (_, _) = tokio::join!(first_handler, second_handler);
-    
+    let (_, _) = tokio::join!(first_handler, second_handler);
     Ok(())
 }
 
