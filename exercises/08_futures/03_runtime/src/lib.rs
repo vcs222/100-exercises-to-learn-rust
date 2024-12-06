@@ -8,9 +8,22 @@ use tokio::net::TcpListener;
 pub async fn fixed_reply<T>(first: TcpListener, second: TcpListener, reply: T)
 where
     // `T` cannot be cloned. How do you share it between the two server tasks?
+    T: Display + Send + Sync + 'static + Copy,
+{
+    let first_handler = tokio::spawn(reply_task(first, reply));
+    let second_handler = tokio::spawn(reply_task(second, reply));
+    let (_, _) = tokio::join!(first_handler, second_handler);
+}
+
+async fn reply_task<T>(listener: TcpListener, reply: T)
+where
     T: Display + Send + Sync + 'static,
 {
-    todo!()
+    loop {
+        let (socket, _) = listener.accept().await.unwrap();
+        let (mut reader, mut writer) = socket.into_split();
+        writer.write_all(reply.to_string().as_bytes()).await.unwrap();
+    }
 }
 
 #[cfg(test)]
